@@ -41,7 +41,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		TrieCleanCacheJournal   string        `toml:",omitempty"`
 		TrieCleanCacheRejournal time.Duration `toml:",omitempty"`
 		TrieDirtyCache          int
-		TrieTimeout             time.Duration
+		TrieTimeout             time.Duration `toml:",omitempty"`
 		SnapshotCache           int
 		Miner                   miner.Config
 		Ethash                  ethash.Config
@@ -55,6 +55,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		RPCTxFeeCap             float64                        `toml:",omitempty"`
 		Checkpoint              *params.TrustedCheckpoint      `toml:",omitempty"`
 		CheckpointOracle        *params.CheckpointOracleConfig `toml:",omitempty"`
+		Downstream              *core.DownstreamConfig         `toml:",omitempty"`
 	}
 	var enc Config
 	enc.Genesis = c.Genesis
@@ -95,6 +96,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 	enc.RPCTxFeeCap = c.RPCTxFeeCap
 	enc.Checkpoint = c.Checkpoint
 	enc.CheckpointOracle = c.CheckpointOracle
+	enc.Downstream = c.Downstream
 	return &enc, nil
 }
 
@@ -125,7 +127,7 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 		TrieCleanCacheJournal   *string        `toml:",omitempty"`
 		TrieCleanCacheRejournal *time.Duration `toml:",omitempty"`
 		TrieDirtyCache          *int
-		TrieTimeout             *time.Duration
+		TrieTimeout             *time.Duration `toml:",omitempty"`
 		SnapshotCache           *int
 		Miner                   *miner.Config
 		Ethash                  *ethash.Config
@@ -139,6 +141,7 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 		RPCTxFeeCap             *float64                       `toml:",omitempty"`
 		Checkpoint              *params.TrustedCheckpoint      `toml:",omitempty"`
 		CheckpointOracle        *params.CheckpointOracleConfig `toml:",omitempty"`
+		Downstream              *core.DownstreamConfig         `toml:",omitempty"`
 	}
 	var dec Config
 	if err := unmarshal(&dec); err != nil {
@@ -257,6 +260,9 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 	}
 	if dec.CheckpointOracle != nil {
 		c.CheckpointOracle = dec.CheckpointOracle
+	}
+	if dec.Downstream != nil {
+		c.Downstream = dec.Downstream
 	}
 	return nil
 }
